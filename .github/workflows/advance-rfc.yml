@@ -21,6 +21,11 @@ jobs:
         path: rfcs-tooling
         ref: 'kg-create-prs'
 
+    - uses: actions/setup-node@v2.1.2
+
+    - run: yarn install
+      working-directory: rfcs-tooling
+
     - name: Find added or modified RFCs
       id: rfcs
       uses: tj-actions/changed-files@v25
