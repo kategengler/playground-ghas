@@ -7,7 +7,7 @@ on:
       - 'text/*.md'
 
 jobs:
-  advance:
+  advance-rfc:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -33,12 +33,15 @@ jobs:
         len=`echo "${{ steps.rfcs.outputs.all_changed_files }}" | jq '. | length'`
         echo "RFCs added or modified: ${{ steps.rfcs.outputs.all_changed_files }}"
         if [[ $len > 1 ]]; then
-          echo "::error::More than 1 RFC is added or modified"
+          echo "::error::More than 1 RFC is added or modified in this PR; unable to automatically open PRs for advancement"
           exit 1
         fi
+
+
 
 # fail if more than one RFC has been edited or added in RFC texts/
 # On merged PR that is a newly added RFC or has CHANGED THE STAGE
 # Update metadata + commit
 # Open PR w/template and label
 # git show HEAD~4:src/main.c  ${{ github.event.push.base.sha }}
+# workflow to add PR link to metadata
