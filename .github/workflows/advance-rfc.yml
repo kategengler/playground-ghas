@@ -52,13 +52,12 @@ jobs:
 
     - name: Determine if stage has changed
       id: has_stage_changed
-      working-directory: rfcs-tooling
       run: |
         len=`echo "${{ steps.rfcs.outputs.added_files }}" | jq '. | length'`
         if [[ $len == 1 ]]; then
           echo "::set-output name=value::true"
         else
-          if `node has-stage-changed.js ${{ github.event.push.base.sha }} ${{ steps.modified_rfc.outputs.path }}`; then
+          if `node rfcs-tooling/has-stage-changed.js ${{ github.event.push.base.sha }} ${{ steps.modified_rfc.outputs.path }}`; then
             echo "::set-output name=value::true"
           else
             echo "::set-output name=value::false"
@@ -68,17 +67,17 @@ jobs:
     - name: Update frontmatter
       id: stage
       if: ${{ steps.has_stage_changed.outputs.value }} == true
-      working-directory: rfcs-tooling
       run: |
-        new_stage=`node find-next-stage.js ${{ steps.modified_rfc.outputs.path }}`
+        new_stage=`node rfcs-tooling/find-next-stage.js ${{ steps.modified_rfc.outputs.path }}`
         echo "::set-output name=value::$new_stage"
-        node update-rfc-stage.js $new_stage ${{ steps.modified_rfc.outputs.path }}
+        node rfcs-tooling/update-rfc-stage.js $new_stage ${{ steps.modified_rfc.outputs.path }}
 # TODO: Check for existing open PRs to avoid infinite PRs
     - name: Open PR
       if: ${{ steps.has_stage_changed.outputs.value }} == true
       uses: peter-evans/create-pull-request@v4
       with:
         commit-message: "Advance RFC to Stage ${{ steps.stage.outputs.value }}"
+        add-paths: 'text'
         branch: "advance-rfc-${{ steps.modified_rfc.outputs.pr_number }}"
         title: "Advance RFC #${{ steps.modified_rfc.outputs.pr_number}} to Stage ${{ steps.stage.outputs.value }}"
         # Make templates for body of PRs
