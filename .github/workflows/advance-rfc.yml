@@ -65,7 +65,7 @@ jobs:
       if: ${{ steps.has_stage_changed.outputs.value }} == true
       working-directory: rfcs-tooling
       run: |
-        new_stage=`node get-next-stage.js ${{ steps.modified_rfc.outputs.path }}`
+        new_stage=`node find-next-stage.js ${{ steps.modified_rfc.outputs.path }}`
         echo "::set-output name=value::$new_stage"
         node update-rfc-stage.js $new_stage ${{ steps.modified_rfc.outputs.path }}
 # TODO: Check for existing open PRs to avoid infinite PRs
