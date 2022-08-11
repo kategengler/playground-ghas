@@ -1,5 +1,5 @@
 ---
-stage: accepted
+stage: ready-for-release
 start-date:
 release-date: Unreleased
 release-versions:
@@ -8,6 +8,7 @@ release-versions:
 teams:
   - framework
 prs:
-  accepted: https://github.com/emberjs/rfcs/pull/16
+  accepted: 'https://github.com/emberjs/rfcs/pull/16'
+  ready-for-release: 'https://github.com/kategengler/playground-ghas/pull/19'
 ---
 # My RFC
