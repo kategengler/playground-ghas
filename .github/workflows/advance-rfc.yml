@@ -105,6 +105,8 @@ jobs:
         body: "${{ steps.pr_variables.outputs.body }}"
         labels: "RFC Advancement,S-${{ steps.pr_variables.outputs.pretty_stage}}"
         # team-reviewers // TODO: set on advances to ready-for-release, need to setup teams correctly on rfcs repo
+      run: |
+        echo "${{ steps.pr_variables.outputs.body }}"
 
     - name: Add new PR link to RFC frontmatter
       if: ${{ steps.has_stage_changed.outputs.value }} == true
@@ -113,12 +115,9 @@ jobs:
 
     - name: Update PR
       if: ${{ steps.has_stage_changed.outputs.value }} == true
-      uses: peter-evans/create-pull-request@v4
-      with:
-        commit-message: "Advance RFC to Stage ${{ steps.stage.outputs.value }}"
-        add-paths: 'text'
-        branch: "advance-rfc-${{ steps.modified_rfc.outputs.pr_number }}"
-        title: "Advance RFC #${{ steps.modified_rfc.outputs.pr_number}} to Stage ${{ steps.pr_variables.outputs.pretty_stage }}"
-        body: "${{ steps.pr_variables.outputs.body }}"
-        labels: "RFC Advancement,S-${{ steps.pr_variables.outputs.pretty_stage}}"
-        # team-reviewers // TODO: set on advances to ready-for-release, need to setup teams correctly on rfcs repo
+      run: |
+        git config --local user.email 'ember-rfcs@example.com'
+        git config --local user.name 'Ember.js RFCS CI'
+        git add ${{ steps.modified_rfc.outputs.path }}
+        git commit -m "Update RFC ${{ steps.modified_rfc.outputs.pr_number }} ${{ steps.stage.outputs.value }} PR URL"
+        git push origin advance-rfc-${{ steps.modified_rfc.outputs.pr_number }}
