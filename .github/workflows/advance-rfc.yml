@@ -105,12 +105,11 @@ jobs:
         body: "${{ steps.pr_variables.outputs.body }}"
         labels: "RFC Advancement,S-${{ steps.pr_variables.outputs.pretty_stage}}"
         # team-reviewers // TODO: set on advances to ready-for-release, need to setup teams correctly on rfcs repo
-      run: |
-        echo "${{ steps.pr_variables.outputs.body }}"
 
     - name: Add new PR link to RFC frontmatter
       if: ${{ steps.has_stage_changed.outputs.value }} == true
       run: |
+        echo "${{ steps.pr_variables.outputs.body }}"
         node rfcs-tooling/update-advancement-pr.js ${{ steps.modified_rfc.outputs.path }} ${{ steps.stage.outputs.value}} ${{ steps.create_pr.outputs.pull-request-url }}
 
     - name: Update PR
