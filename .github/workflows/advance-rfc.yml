@@ -20,6 +20,7 @@ jobs:
         repository: emberjs/rfcs-tooling
         path: rfcs-tooling
         ref: 'kg-create-prs'
+        token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
     - uses: actions/setup-node@v2.1.2
 
@@ -84,10 +85,10 @@ jobs:
           template=`sed -e 's/__RFC_NUMBER__/${{ steps.modified_rfc.outputs.pr_number }}/g' .github/PULL_REQUEST_TEMPLATE/advance-to-ready-for-release.md`  
         elif [[ ${{ steps.stage.outputs.value }} == "released" ]]; then
           pretty_stage="Released"
-          template=`sed -e 's/__RFC_NUMBER__/${{ steps.modified_rfc.outputs.pr_number }}/g' -e 's/__READY_FOR_RELEASE_PR__/$ready_for_release_pr/g' .github/PULL_REQUEST_TEMPLATE/advance-to-released.md`
+          template=`sed -e 's/__RFC_NUMBER__/${{ steps.modified_rfc.outputs.pr_number }}/g' -e "s/__READY_FOR_RELEASE_PR__/$ready_for_release_pr/g" .github/PULL_REQUEST_TEMPLATE/advance-to-released.md`
         elif [[ ${{ steps.stage.outputs.value }} == "recommended" ]]; then
           pretty_stage="Recommended"
-          template=`sed -e 's/__RFC_NUMBER__/${{ steps.modified_rfc.outputs.pr_number }}/g' -e 's/__READY_FOR_RELEASE_PR__/$ready_for_release_pr/g' -e 's/__RELEASED_PR__/$released_pr/g' .github/PULL_REQUEST_TEMPLATE/advance-to-recommended.md`
+          template=`sed -e 's/__RFC_NUMBER__/${{ steps.modified_rfc.outputs.pr_number }}/g' -e "s/__READY_FOR_RELEASE_PR__/$ready_for_release_pr/g" -e "s/__RELEASED_PR__/$released_pr/g" .github/PULL_REQUEST_TEMPLATE/advance-to-recommended.md`
         fi
         # Hacks to pass multi-line strings around in GH Workflows
         template="${template//'%'/'%25'}"
@@ -101,6 +102,7 @@ jobs:
       id: create_pr
       uses: peter-evans/create-pull-request@v4
       with:
+        token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         commit-message: "Advance RFC to Stage ${{ steps.stage.outputs.value }}"
         add-paths: 'text'
         branch: "advance-rfc-${{ steps.modified_rfc.outputs.pr_number }}"
@@ -112,7 +114,6 @@ jobs:
     - name: Add new PR link to RFC frontmatter
       if: ${{ steps.has_stage_changed.outputs.value }} == true
       run: |
-        echo "${{ steps.pr_variables.outputs.body }}"
         node rfcs-tooling/update-advancement-pr.js ${{ steps.modified_rfc.outputs.path }} ${{ steps.stage.outputs.value}} ${{ steps.create_pr.outputs.pull-request-url }}
 
     - name: Update PR
