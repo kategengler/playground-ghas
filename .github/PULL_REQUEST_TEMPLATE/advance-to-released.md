@@ -4,7 +4,7 @@
 
 This pull request is advancing the RFC to the [Released Stage](https://github.com/emberjs/rfcs#released).
 
-- [PR to Accepted Stage](#__RFC_NUMBER__)
+- PR to Accepted Stage: #__RFC_NUMBER__
 - [PR to Ready For Release Stage](__READY_FOR_RELEASE_PR__)
 
 <details>
