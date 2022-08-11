@@ -1,10 +1,13 @@
-# Advance #{rfc-number} to the [Ready For Release Stage](https://github.com/emberjs/rfcs#ready-for-release)
+# Advance #__RFC_NUMBER__ to the [Ready For Release Stage](https://github.com/emberjs/rfcs#ready-for-release)
 
 ## Summary
 
 This pull request is advancing the RFC to the [Ready For Release Stage](https://github.com/emberjs/rfcs#ready-for-release).
 
+- PR to Accepted Stage: #__RFC_NUMBER__ 
+
 **An FCP is required before merging this PR to advance.**
+
 
 <details>
   <summary>Ready for Release Stage Description</summary>

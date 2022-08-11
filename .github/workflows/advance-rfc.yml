@@ -72,6 +72,26 @@ jobs:
         echo "::set-output name=value::$new_stage"
         node rfcs-tooling/update-rfc-stage.js $new_stage ${{ steps.modified_rfc.outputs.path }}
 
+    - name: Set variables for use in PR
+      id: pr_variables
+      if: ${{ steps.has_stage_changed.outputs.value }} == true
+      run: |
+        frontmatter=`node rfcs-tooling/rfc-frontmatter.js ${{ steps.modified_rfc.outputs.path }}`
+        ready_for_release_pr=`echo $frontmatter | jq '.prs.ready-for-release'`
+        released_pr=`echo $frontmatter | jq '.prs.released'`
+        if [[ ${{ steps.stage.outputs.value }} == "ready-for-release" ]]; then
+          pretty_stage="Ready for Release"
+          template=`sed -e 's/__RFC_NUMBER__/${{ steps.modified_rfc.outputs.pr_number }}/g' .github/PULL_REQUEST_TEMPLATE/advance-to-ready-for-release.md`  
+        elif [[ ${{ steps.stage.outputs.value }} == "released" ]]; then
+          pretty_stage="Released"
+          template=`sed -e 's/__RFC_NUMBER__/${{ steps.modified_rfc.outputs.pr_number }}/g' -e 's/__READY_FOR_RELEASE_PR__/$ready_for_release_pr/g' .github/PULL_REQUEST_TEMPLATE/advance-to-released.md`
+        elif [[ ${{ steps.stage.outputs.value }} == "recommended" ]]; then
+          pretty_stage="Recommended"
+          template=`sed -e 's/__RFC_NUMBER__/${{ steps.modified_rfc.outputs.pr_number }}/g' -e 's/__READY_FOR_RELEASE_PR__/$ready_for_release_pr/g' -e 's/__RELEASED_PR__/$released_pr/g' .github/PULL_REQUEST_TEMPLATE/advance-to-recommended.md`
+        fi
+        echo "::set-output name=body::$template"
+        echo "::set-output name=pretty_stage::$pretty_stage"
+
     - name: Open PR
       if: ${{ steps.has_stage_changed.outputs.value }} == true
       uses: peter-evans/create-pull-request@v4
@@ -79,10 +99,9 @@ jobs:
         commit-message: "Advance RFC to Stage ${{ steps.stage.outputs.value }}"
         add-paths: 'text'
         branch: "advance-rfc-${{ steps.modified_rfc.outputs.pr_number }}"
-        title: "Advance RFC #${{ steps.modified_rfc.outputs.pr_number}} to Stage ${{ steps.stage.outputs.value }}"
-        # Make templates for body of PRs
-        body: "Advance RFC #${{ steps.modified_rfc.outputs.pr_number}} to Stage ${{ steps.stage.outputs.value }}"
-        labels: 'RFC Advancement' # Add labels for stage, requires-fcp
-        # team-reviewers // set on advances to ready-for-release
+        title: "Advance RFC #${{ steps.modified_rfc.outputs.pr_number}} to Stage ${{ steps.pr_variables.outputs.pretty_stage }}"
+        body: "${{ steps.pr_variables.outputs.body }}"
+        labels: "RFC Advancement,S-${{ steps.pr_variables.outputs.pretty_stage}}"
+        # team-reviewers // TODO: set on advances to ready-for-release, need to setup teams correctly on rfcs repo
 
 # workflow to add PR link to metadata
