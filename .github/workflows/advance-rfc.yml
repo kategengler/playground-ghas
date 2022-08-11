@@ -71,7 +71,7 @@ jobs:
         new_stage=`node rfcs-tooling/find-next-stage.js ${{ steps.modified_rfc.outputs.path }}`
         echo "::set-output name=value::$new_stage"
         node rfcs-tooling/update-rfc-stage.js $new_stage ${{ steps.modified_rfc.outputs.path }}
-# TODO: Check for existing open PRs to avoid infinite PRs
+
     - name: Open PR
       if: ${{ steps.has_stage_changed.outputs.value }} == true
       uses: peter-evans/create-pull-request@v4
