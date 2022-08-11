@@ -111,6 +111,7 @@ jobs:
         title: "Advance RFC #${{ steps.modified_rfc.outputs.pr_number}} to Stage ${{ steps.pr_variables.outputs.pretty_stage }}"
         body: "${{ steps.pr_variables.outputs.body }}"
         labels: "RFC Advancement,S-${{ steps.pr_variables.outputs.pretty_stage}}"
+        draft: true
         # team-reviewers // TODO: set on advances to ready-for-release, need to setup teams correctly on rfcs repo
 
     - name: Add new PR link to RFC frontmatter
