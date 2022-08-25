@@ -24,8 +24,16 @@ jobs:
           path: 'text'
           json: 'true'
 
+      - name: Find out if an RFC has been added
+        id: added-rfc
+        run: |
+          len=`echo "${{ steps.rfcs.outputs.added_files }}" | jq '. | length'`
+          if [[ $len == 1 ]]; then
+            echo "::set-output name=exists::true"
+          fi
+
       - name: Ensure the RFC is in the Exploring Stage before merge is allowed
-        if: steps.rfcs.outputs.added_files && !contains(github.event.pull_request.labels.*.name, 'S-Exploring')
+        if: steps.added-rfc.outputs.exists && !contains(github.event.pull_request.labels.*.name, 'S-Exploring')
         run: |
           echo "Newly added RFCs must advance to the Exploring Stage before merging to Accepted is allowed"
           exit 1
@@ -43,8 +51,16 @@ jobs:
           path: 'text'
           json: 'true'
 
+      - name: Find out if an RFC has been added
+        id: added-rfc
+        run: |
+          len=`echo "${{ steps.rfcs.outputs.added_files }}" | jq '. | length'`
+          if [[ $len == 1 ]]; then
+            echo "::set-output name=exists::true"
+          fi
+
       - name: Ensure the RFC only has one stage
-        if: steps.rfcs.outputs.added_files && contains(github.event.pull_request.labels.*.name, 'S-Exploring') && contains(github.event.pull_request.labels.*.name, 'S-Proposed')
+        if: steps.added-rfc.outputs.exists && contains(github.event.pull_request.labels.*.name, 'S-Exploring') && contains(github.event.pull_request.labels.*.name, 'S-Proposed')
         run: |
           echo "Newly added RFC must only have one stage label"
           exit 1
@@ -63,7 +79,6 @@ jobs:
           json: 'true'
 
       - name: Fail if more than 1 RFC is added
-        if: steps.rfcs.outputs.added_files
         run: |
           len=`echo "${{ steps.rfcs.outputs.added_files }}" | jq '. | length'`
           echo "RFCs added or modified: ${{ steps.rfcs.outputs.added_files }}"
@@ -85,6 +100,14 @@ jobs:
           path: 'text'
           json: 'true'
 
+      - name: Find out if an RFC has been added
+        id: added-rfc
+        run: |
+          len=`echo "${{ steps.rfcs.outputs.added_files }}" | jq '. | length'`
+          if [[ $len == 1 ]]; then
+            echo "::set-output name=exists::true"
+          fi          
+
       - name: Checkout tools repo
         uses: actions/checkout@v3
         with:
@@ -98,7 +121,7 @@ jobs:
         working-directory: rfcs-tooling
 
       - name: Verify stage of newly added RFC is `accepted` in frontmatter
-        if: steps.rfcs.outputs.added_files
+        if: steps.added-rfc.outputs.exists
         run: |
           added_rfc=`echo "${{ steps.rfcs.outputs.added_files }}" | jq '.[0]'` 
           frontmatter=`node rfcs-tooling/rfc-frontmatter.js "$added_rfc"`

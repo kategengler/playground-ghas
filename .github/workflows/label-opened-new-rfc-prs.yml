@@ -25,11 +25,15 @@ jobs:
           base_sha: ${{ github.event.pull_request.base.sha }}
           json: 'true'
 
-      - run: |
-          echo "${{ toJSON(steps.rfcs.outputs.added_files) }}"
-          echo "length ${{ steps.rfcs.outputs.added_files.length }}"
+      - name: Find out if an RFC has been added
+        id: added-rfc
+        run: |
+          len=`echo "${{ steps.rfcs.outputs.added_files }}" | jq '. | length'`
+          if [[ $len == 1 ]]; then
+            echo "::set-output name=exists::true"
+          fi
 
       - uses: actions-ecosystem/action-add-labels@v1
-        if: steps.rfcs.outputs.added_files
+        if: steps.added-rfc.outputs.exists
         with:
           labels: S-Proposed
