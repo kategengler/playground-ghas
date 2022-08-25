@@ -17,23 +17,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Find added or modified RFCs
+      - name: RFCs Added or Changed
         id: rfcs
-        uses: tj-actions/changed-files@v25
-        with:
-          path: 'text'
-          json: 'true'
-
-      - name: Find out if an RFC has been added
-        id: added-rfc
-        run: |
-          len=`echo "${{ steps.rfcs.outputs.added_files }}" | jq '. | length'`
-          if [[ $len == 1 ]]; then
-            echo "::set-output name=exists::true"
-          fi
+        uses: ./.github/actions/find-added-or-modified-rfcs
 
       - name: Ensure the RFC is in the Exploring Stage before merge is allowed
-        if: steps.added-rfc.outputs.exists && !contains(github.event.pull_request.labels.*.name, 'S-Exploring')
+        if: steps.rfcs.outputs.added-rfc-count > 0 && !contains(github.event.pull_request.labels.*.name, 'S-Exploring')
         run: |
           echo "Newly added RFCs must advance to the Exploring Stage before merging to Accepted is allowed"
           exit 1
