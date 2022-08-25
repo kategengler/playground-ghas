@@ -25,6 +25,9 @@ jobs:
           base_sha: ${{ github.event.pull_request.base.sha }}
           json: 'true'
 
+      - run: |
+          echo "${{ toJSON(steps.rfcs.outputs.added_files) }}"
+
       - uses: actions-ecosystem/action-add-labels@v1
         if: steps.rfcs.outputs.added_files
         with:
