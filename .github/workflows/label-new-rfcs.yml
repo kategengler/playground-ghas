@@ -1,0 +1,29 @@
+name: Label newly opened RFC PRs
+
+on:
+  pull_request_target:
+    types: [opened]
+    paths:
+      - 'text/*.md'
+
+jobs:
+  label-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get Changed Files
+        uses: lots0logs/gh-action-get-changed-files@2.1.4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Filter Added Files to Added RFCs
+        id: files
+        run: |
+          added_rfc_files=`jq -r '[.[] | select(startswith("text/"))] | join(" ")' ${HOME}/files_added.json`
+          echo "::set-output name=added::$added_rfc_files"
+
+      - uses: actions-ecosystem/action-add-labels@v1
+        if: steps.files.added.length > 0
+        with:
+          labels: S-Proposed
