@@ -16,13 +16,6 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Debug
-        run: |
-          echo "HEAD ${{ github.event.pull_request.head.sha }}"
-          echo "BASE ${{ github.event.pull_request.base.sha }}"
-          echo "BASE $GITHUB_BASE_REF"
-          echo "HEAD $GITHUB_HEAD_REF"
-
       - name: Find added or modified RFCs
         id: rfcs
         uses: tj-actions/changed-files@v25

@@ -12,21 +12,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Get Changed Files
-        uses: lots0logs/gh-action-get-changed-files@2.1.4
+      - name: Find added or modified RFCs
+        id: rfcs
+        uses: tj-actions/changed-files@v25
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Filter Added Files to Added RFCs
-        id: files
-        run: |
-          added_files=`jq -r '[.[] | select(startswith("text/"))] | join(" ")' ${HOME}/files_added.json`
-          echo "::set-output name=added::$added_files"
+          path: 'text'
+          json: 'true'
 
       - name: Ensure the RFC is in the Exploring Stage before merge is allowed
-        if: steps.files.outputs.added && !contains(${{ github.event.pull_request.labels }}, 'S-Exploring')
+        if: steps.rfcs.outputs.added && !contains(${{ github.event.pull_request.labels }}, 'S-Exploring')
         run: |
           echo "RFCs must advance to the Exploring Stage before merging to Accepted is allowed"
           exit 1
-
-# Ensure only one RFC is added, or advancement won't work
