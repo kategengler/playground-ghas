@@ -20,7 +20,7 @@ jobs:
           json: 'true'
 
       - name: Ensure the RFC is in the Exploring Stage before merge is allowed
-        if: steps.rfcs.outputs.added
+        if: steps.rfcs.outputs.added_files && !contains(github.event.pull_request.labels.*.name, 'S-Exploring')
         run: |
           echo "${{ toJson(github.event.pull_request.labels.*.name) }}"
           echo "RFCs must advance to the Exploring Stage before merging to Accepted is allowed"
