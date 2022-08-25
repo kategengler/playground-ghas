@@ -22,6 +22,7 @@ jobs:
         run: |
           added_files=`jq -r '[.[] | select(startswith("text/"))] | join(" ")' ${HOME}/files_added.json`
           echo "::set-output name=added::$added_files"
+          echo $added_files
 
       - name: Get Labels
         id: labels
