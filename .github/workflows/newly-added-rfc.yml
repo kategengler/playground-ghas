@@ -15,7 +15,7 @@ jobs:
     name: Does PR add RFCs?
     runs-on: ubuntu-latest
     outputs:
-      rfcs-added: ${{ steps.rfcs.outputs.added-rfcs-count}}
+      rfcs-added: ${{ steps.rfcs.outputs.added-rfcs-count }}
     steps:
       - uses: actions/checkout@v3
 
@@ -30,7 +30,7 @@ jobs:
     needs: [check-files]
     steps:
       - name: Ensure the RFC is in the Exploring Stage before merge is allowed
-        if: !contains(github.event.pull_request.labels.*.name, 'S-Exploring')
+        if: needs.check-files.outputs.rfcs-added && !contains(github.event.pull_request.labels.*.name, 'S-Exploring')
         run: |
           echo "Newly added RFCs must advance to the Exploring Stage before merging to Accepted is allowed"
           exit 1
