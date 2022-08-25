@@ -84,6 +84,11 @@ jobs:
           path: rfcs-tooling
           ref: 'v1.2.0'
 
+      - uses: actions/setup-node@v3
+
+      - run: yarn install
+        working-directory: rfcs-tooling
+
       - name: Verify stage of newly added RFC is `accepted` in frontmatter
         if: steps.rfcs.outputs.added_files
         run: |
