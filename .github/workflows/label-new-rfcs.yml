@@ -25,6 +25,6 @@ jobs:
           echo $added_rfc_files
 
       - uses: actions-ecosystem/action-add-labels@v1
-        if: steps.files.added
+        if: steps.files.outputs.added
         with:
           labels: S-Proposed
