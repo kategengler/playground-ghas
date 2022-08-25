@@ -25,9 +25,9 @@ jobs:
 
   check-in-exploring:
     name: Stage must be 'Exploring' (via label) for new RFC before merging
+    if: ${{ needs.check-files.outputs.rfcs-added }}
     runs-on: ubuntu-latest
     needs: [check-files]
-    if: needs.check-files.outputs.rfcs-added
     steps:
       - name: Ensure the RFC is in the Exploring Stage before merge is allowed
         if: !contains(github.event.pull_request.labels.*.name, 'S-Exploring')
