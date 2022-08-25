@@ -19,7 +19,7 @@ jobs:
       with:
         repository: emberjs/rfcs-tooling
         path: rfcs-tooling
-        ref: 'kg-create-prs'
+        ref: 'v1.2.0'
         token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
     - uses: actions/setup-node@v2.1.2
@@ -112,7 +112,6 @@ jobs:
         body: "${{ steps.pr_variables.outputs.body }}"
         labels: "RFC Advancement,S-${{ steps.pr_variables.outputs.pretty_stage}}"
         draft: true
-        # team-reviewers // TODO: set on advances to ready-for-release, need to setup teams correctly on rfcs repo
 
     - name: Add new PR link to RFC frontmatter
       if: ${{ steps.stage.outputs.value }}
