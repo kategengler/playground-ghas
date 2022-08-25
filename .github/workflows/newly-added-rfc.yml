@@ -160,7 +160,7 @@ jobs:
           repository: emberjs/rfcs-tooling
           path: rfcs-tooling
 
-      - uses: actions/setup-node@v
+      - uses: actions/setup-node@v3
 
       - run: yarn install
         working-directory: rfcs-tooling
