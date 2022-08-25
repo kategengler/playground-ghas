@@ -28,16 +28,11 @@ jobs:
         uses: tj-actions/changed-files@v25
         with:
           path: 'text'
+          sha: ${{ github.event.pull_request.head.sha }}
+          base_sha: ${{ github.event.pull_request.base.sha }}
           json: 'true'
 
-      - name: Filter Added Files to Added RFCs
-        id: files
-        run: |
-          added_rfc_files=`echo "${{ steps.rfcs.outputs.all_changed_files }}" | jq -r '[.[] | select(startswith("text/"))] | join(" ")'`
-          echo "::set-output name=added::$added_rfc_files"
-          echo $added_rfc_files
-
       - uses: actions-ecosystem/action-add-labels@v1
-        if: steps.files.outputs.added
+        if: steps.rfcs.outputs.added_files
         with:
           labels: S-Proposed
