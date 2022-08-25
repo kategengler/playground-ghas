@@ -108,17 +108,8 @@ jobs:
             echo "::set-output name=exists::true"
           fi          
 
-      - name: Checkout tools repo
-        uses: actions/checkout@v3
-        with:
-          repository: emberjs/rfcs-tooling
-          path: rfcs-tooling
-          ref: 'v1.2.0'
-
-      - uses: actions/setup-node@v3
-
-      - run: yarn install
-        working-directory: rfcs-tooling
+      - name: Setup RFCs tooling
+        uses: ./.github/workflows/setup-rfcs-tooling
 
       - name: Verify stage of newly added RFC is `accepted` in frontmatter
         if: steps.added-rfc.outputs.exists
@@ -154,16 +145,8 @@ jobs:
             echo "::set-output name=exists::true"
           fi          
 
-      - name: Checkout tools repo
-        uses: actions/checkout@v3
-        with:
-          repository: emberjs/rfcs-tooling
-          path: rfcs-tooling
-
-      - uses: actions/setup-node@v3
-
-      - run: yarn install
-        working-directory: rfcs-tooling
+      - name: Setup RFCs tooling
+        uses: ./.github/workflows/setup-rfcs-tooling
 
       - name: Test RFC Filename matches PR Number that adds it
         env:

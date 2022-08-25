@@ -14,18 +14,8 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Checkout tools repo
-      uses: actions/checkout@v3
-      with:
-        repository: emberjs/rfcs-tooling
-        path: rfcs-tooling
-        ref: 'v1.2.0'
-        token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-
-    - uses: actions/setup-node@v2.1.2
-
-    - run: yarn install
-      working-directory: rfcs-tooling
+    - name: Setup RFCs tooling
+      uses: ./.github/workflows/setup-rfcs-tooling
 
     - name: Find added or modified RFCs
       id: rfcs
