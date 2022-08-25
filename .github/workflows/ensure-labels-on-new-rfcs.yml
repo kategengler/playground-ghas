@@ -31,6 +31,6 @@ jobs:
           echo $labels
 
       - name: Ensure the RFC is in the Exploring Stage before merge is allowed
-        if: steps.files.added.length > 0
+        if: steps.files.added
         run: |
           echo "${{ steps.labels.outputs.labels }}"
