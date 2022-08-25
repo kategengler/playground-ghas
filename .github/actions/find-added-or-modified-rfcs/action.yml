@@ -32,7 +32,7 @@ runs:
         echo "::set-output name=added::$added_len"
 
     - name: Find modified or added RFC info
-      id: modified_rfc
+      id: modified-rfc
       shell: bash
       run: |        
         changed_file=`echo "${{ steps.rfcs.outputs.all_changed_files }}" | jq '.[0]'`
