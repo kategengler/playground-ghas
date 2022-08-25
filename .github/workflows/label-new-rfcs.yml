@@ -15,15 +15,17 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           persist-credentials: false
 
-      - name: Get Changed Files
-        uses: lots0logs/gh-action-get-changed-files@2.1.4
+      - name: Find added or modified RFCs
+        id: rfcs
+        uses: tj-actions/changed-files@v25
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          path: 'text'
+          json: 'true'
 
       - name: Filter Added Files to Added RFCs
         id: files
         run: |
-          added_rfc_files=`jq -r '[.[] | select(startswith("text/"))] | join(" ")' ${HOME}/files_added.json`
+          added_rfc_files=`echo "${{ steps.rfcs.outputs.all_changed_files }}" | jq -r '[.[] | select(startswith("text/"))] | join(" ")'`
           echo "::set-output name=added::$added_rfc_files"
           echo $added_rfc_files
 
