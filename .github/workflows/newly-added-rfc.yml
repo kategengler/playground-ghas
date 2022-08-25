@@ -80,8 +80,8 @@ jobs:
 
       - name: Fail if more than 1 RFC is added
         run: |
-          len=`echo "${{ steps.rfcs.outputs.added_files }}" | jq '. | length'`
-          echo "RFCs added or modified: ${{ steps.rfcs.outputs.added_files }}"
+          len=`echo "${{ steps.rfcs.outputs.all_changed_files }}" | jq '. | length'`
+          echo "RFCs added or modified: ${{ steps.rfcs.outputs.all_changed_files }}"
           if [[ $len > 1 ]]; then
             echo "::error::More than 1 RFC is added in this PR; will be unable to automatically open PRs for advancement"
             exit 1
