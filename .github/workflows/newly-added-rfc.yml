@@ -1,4 +1,4 @@
-name: Newly Added RFCs
+name: Newly Added RFC
 
 on:
   pull_request:
@@ -6,8 +6,13 @@ on:
     paths:
       - 'text/*.md'
 
+concurrency:
+  group: ci-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   check-in-exploring:
+    name: Stage must be 'Exploring' (via label) for new RFC before merging
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -26,6 +31,7 @@ jobs:
           exit 1
 
   verify-only-in-one-stage:
+    name: RFC must be in only one stage before merging (labels)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -40,10 +46,11 @@ jobs:
       - name: Ensure the RFC only has one stage
         if: steps.rfcs.outputs.added_files && contains(github.event.pull_request.labels.*.name, 'S-Exploring') && contains(github.event.pull_request.labels.*.name, 'S-Proposed')
         run: |
-          echo "Newly added RFCs must only have one stage label"
+          echo "Newly added RFC must only have one stage label"
           exit 1
 
   only-one-rfc-added:
+    name: Only one RFC can be added in a PR
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -66,6 +73,7 @@ jobs:
           fi
 
   frontmatter-stage-is-accepted:
+    name: Frontmatter stage must be 'accepted' before merging
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
