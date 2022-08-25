@@ -130,3 +130,43 @@ jobs:
               echo "::error::Newly added RFCs must have the stage 'accepted' in the frontmatter"
               exit 1
           fi
+
+  check-filename:
+    name: Filename matches RFC number
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Find added or modified RFCs
+        id: rfcs
+        uses: tj-actions/changed-files@v25
+        with:
+          path: 'text'
+          json: 'true'
+
+      - name: Find out if an RFC has been added
+        id: added-rfc
+        run: |
+          len=`echo "${{ steps.rfcs.outputs.added_files }}" | jq '. | length'`
+          if [[ $len == 1 ]]; then
+            changed_file=`echo "${{ steps.rfcs.outputs.added_files }}" | jq '.[0]'`
+            echo "::set-output name=path::$changed_file"
+            echo "::set-output name=exists::true"
+          fi          
+
+      - name: Checkout tools repo
+        uses: actions/checkout@v3
+        with:
+          repository: emberjs/rfcs-tooling
+          path: rfcs-tooling
+
+      - uses: actions/setup-node@v
+
+      - run: yarn install
+        working-directory: rfcs-tooling
+
+      - name: Test RFC Filename matches PR Number that adds it
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: node check-filename-matches-pr.js $PR_NUMBER ${{ steps.added-rfc.path }}
+        working-directory: rfcs-tooling
