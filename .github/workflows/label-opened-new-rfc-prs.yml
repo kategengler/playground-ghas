@@ -27,6 +27,7 @@ jobs:
 
       - run: |
           echo "${{ toJSON(steps.rfcs.outputs.added_files) }}"
+          echo "length ${{ steps.rfcs.outputs.added_files.length }}"
 
       - uses: actions-ecosystem/action-add-labels@v1
         if: steps.rfcs.outputs.added_files
