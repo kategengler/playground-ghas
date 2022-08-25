@@ -22,5 +22,7 @@ jobs:
       - name: Ensure the RFC is in the Exploring Stage before merge is allowed
         if: steps.rfcs.outputs.added && !contains(${{ github.event.pull_request.labels }}, 'S-Exploring')
         run: |
+          echo "${{ github.event.pull_request.labels }}"
+          echo "${{ contains(github.event.pull_request.labels, 'S-Exploring') }}"
           echo "RFCs must advance to the Exploring Stage before merging to Accepted is allowed"
           exit 1
