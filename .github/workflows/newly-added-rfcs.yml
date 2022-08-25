@@ -1,4 +1,4 @@
-name: Ensure Stage of New RFCs before Merge
+name: Newly Added RFCs
 
 on:
   pull_request:
@@ -76,6 +76,13 @@ jobs:
         with:
           path: 'text'
           json: 'true'
+
+      - name: Checkout tools repo
+        uses: actions/checkout@v3
+        with:
+          repository: emberjs/rfcs-tooling
+          path: rfcs-tooling
+          ref: 'v1.2.0'
 
       - name: Verify stage of newly added RFC is `accepted` in frontmatter
         if: steps.rfcs.outputs.added_files
