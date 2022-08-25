@@ -7,7 +7,7 @@ on:
       - 'text/*.md'
 
 jobs:
-  check-filename:
+  check-labels:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -20,18 +20,12 @@ jobs:
       - name: Filter Added Files to Added RFCs
         id: files
         run: |
+          cat ${HOME}/files_added.json
           added_files=`jq -r '[.[] | select(startswith("text/"))] | join(" ")' ${HOME}/files_added.json`
           echo "::set-output name=added::$added_files"
           echo $added_files
 
-      - name: Get Labels
-        id: labels
-        run: |
-          labels=${{ github.event.pull_request.labels }}
-          echo "::set-output name=labels::$labels"
-          echo $labels
-
       - name: Ensure the RFC is in the Exploring Stage before merge is allowed
-        if: steps.files.added
+        if: steps.files.added && !contains(${{ github.event.pull_request.labels }}, 'S-Exploring')
         run: |
-          echo "${{ steps.labels.outputs.labels }}"
+          echo "${{ github.event.pull_request.labels }}"
