@@ -36,6 +36,7 @@ jobs:
 
     - name: Fail if more than 1 RFC is added or modified
       run: |
+        # TODO FIx bug here where it gets all files, not just the RFCs
         len=`echo "${{ steps.rfcs.outputs.all_changed_files }}" | jq '. | length'`
         echo "RFCs added or modified: ${{ steps.rfcs.outputs.all_changed_files }}"
         if [[ $len > 1 ]]; then

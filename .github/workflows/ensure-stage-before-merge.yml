@@ -1,4 +1,4 @@
-name: Ensure Labels of New RFCs
+name: Ensure Stage of New RFCs before Merge
 
 on:
   pull_request:
@@ -26,4 +26,7 @@ jobs:
       - name: Ensure the RFC is in the Exploring Stage before merge is allowed
         if: steps.files.outputs.added && !contains(${{ github.event.pull_request.labels }}, 'S-Exploring')
         run: |
-          echo "${{ github.event.pull_request.labels }}"
+          echo "RFCs must advance to the Exploring Stage before merging to Accepted is allowed"
+          exit 1
+
+# Ensure only one RFC is added, or advancement won't work
