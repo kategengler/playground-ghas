@@ -15,7 +15,7 @@ jobs:
         fetch-depth: 0
 
     - name: Setup RFCs tooling
-      uses: ./.github/workflows/setup-rfcs-tooling
+      uses: ./.github/workflows/setup-rfcs-tooling.yml
 
     - name: Find added or modified RFCs
       id: rfcs

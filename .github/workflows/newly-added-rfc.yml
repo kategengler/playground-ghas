@@ -109,7 +109,7 @@ jobs:
           fi          
 
       - name: Setup RFCs tooling
-        uses: ./.github/workflows/setup-rfcs-tooling
+        uses: ./.github/workflows/setup-rfcs-tooling.yml
 
       - name: Verify stage of newly added RFC is `accepted` in frontmatter
         if: steps.added-rfc.outputs.exists
@@ -146,7 +146,7 @@ jobs:
           fi          
 
       - name: Setup RFCs tooling
-        uses: ./.github/workflows/setup-rfcs-tooling
+        uses: ./.github/workflows/setup-rfcs-tooling.yml
 
       - name: Test RFC Filename matches PR Number that adds it
         env:
