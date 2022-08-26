@@ -37,7 +37,7 @@ jobs:
     - name: Determine if stage has changed
       id: has_stage_changed
       run: |
-        if [[ ${{ steps.rfcs.outputs.modified-rfcs-count }} == 1 ]]; then
+        if [[ ${{ steps.rfcs.outputs.added-rfcs-count }} == 1 ]]; then
           echo "::set-output name=value::true"
         else
           if `node rfcs-tooling/has-stage-changed.js ${{ github.event.push.base.sha }} ${{ steps.rfcs.outputs.modified-rfc }}`; then
