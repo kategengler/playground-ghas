@@ -16,8 +16,6 @@ jobs:
 
     - name: Setup RFCs tooling
       uses: ./.github/actions/setup-rfcs-tooling
-      with:
-        token: ${{ github.token }}
 
     - name: RFCs Added or Changed
       id: rfcs
