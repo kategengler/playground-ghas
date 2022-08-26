@@ -91,7 +91,7 @@ jobs:
     name: Filename matches RFC number
     runs-on: ubuntu-latest
     needs: [ check-rfcs ]
-    if: needs.check-rfcs.outputs.rfcs-added
+    if: needs.check-rfcs.outputs.rfcs-added == 'true'
     steps:
       - uses: actions/checkout@v3
 
