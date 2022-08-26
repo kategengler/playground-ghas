@@ -33,7 +33,7 @@ jobs:
 
   check-in-exploring:
     name: Stage must be 'Exploring' (via label) for new RFC before merging
-    if: ${{ needs.check-rfcs.outputs.rfcs-added == 'true' }}
+    if: needs.check-rfcs.outputs.rfcs-added == 'true'
     runs-on: ubuntu-latest
     needs: [check-rfcs]
     steps:
