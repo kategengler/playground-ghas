@@ -56,11 +56,10 @@ jobs:
     if: needs.check-rfcs.outputs.rfcs-added
     steps:
       - name: Fail if more than 1 RFC is added or modified
+        if: ${{ needs.check-rfcs.outputs.rfcs-changed > 1}}
         run: |      
-          if [[ ${{ needs.check-rfcs.outputs.rfcs-changed }} > 1 ]]; then
-            echo "::error::More than 1 RFC is added in this PR; will be unable to automatically open PRs for advancement"
-            exit 1
-          fi
+          echo "::error::More than 1 RFC is added in this PR; will be unable to automatically open PRs for advancement"
+          exit 1
 
   frontmatter-stage-is-accepted:
     name: Frontmatter stage must be 'accepted' before merging
@@ -77,7 +76,7 @@ jobs:
 
       - name: Verify stage of newly added RFC is `accepted` in frontmatter
         run: |
-          frontmatter=`node rfcs-tooling/rfc-frontmatter.js "${{ needs.check-rfcs.outputs.modified-rfc }}"`
+          frontmatter=`node rfcs-tooling/rfc-frontmatter.js ${{ needs.check-rfcs.outputs.modified-rfc }}`
           stage=`echo $frontmatter | jq '.stage'`
           if [[ $stage != '"accepted"' ]]; then
               echo "::error::Newly added RFCs must have the stage 'accepted' in the frontmatter"

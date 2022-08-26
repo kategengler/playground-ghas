@@ -19,38 +19,29 @@ jobs:
       with:
         token: ${{ github.token }}
 
-    - name: Find added or modified RFCs
+    - name: RFCs Added or Changed
       id: rfcs
-      uses: tj-actions/changed-files@v25
-      with:
-        path: 'text'
-        json: 'true'
+      uses: ./.github/actions/find-added-or-modified-rfcs
 
     - name: Fail if more than 1 RFC is added or modified
+      if: ${{ steps.rfcs.outputs.modified-rfcs-count > 1 }}
       run: |
-        len=`echo "${{ steps.rfcs.outputs.all_changed_files }}" | jq '. | length'`
-        echo "RFCs added or modified: ${{ steps.rfcs.outputs.all_changed_files }}"
-        if [[ $len > 1 ]]; then
-          echo "::error::More than 1 RFC is added or modified in this PR; unable to automatically open PRs for advancement"
-          exit 1
-        fi
+        echo "::error::More than 1 RFC is added or modified in this PR; unable to automatically open PRs for advancement"
+        exit 1
 
     - name: Find modified or added RFC path
       id: modified_rfc
       run: |
-        changed_file=`echo "${{ steps.rfcs.outputs.all_changed_files }}" | jq '.[0]'`
-        echo "::set-output name=path::$changed_file" 
-        pr_number="${changed_file//[!0-9]/}"
+        pr_number="${${{ steps.rfcs.outputs.modified-rfc }}//[!0-9]/}"
         echo "::set-output name=pr_number::$pr_number"
 
     - name: Determine if stage has changed
       id: has_stage_changed
       run: |
-        len=`echo "${{ steps.rfcs.outputs.added_files }}" | jq '. | length'`
-        if [[ $len == 1 ]]; then
+        if [[ ${{ steps.rfcs.outputs.modified-rfcs-count }} == 1 ]]; then
           echo "::set-output name=value::true"
         else
-          if `node rfcs-tooling/has-stage-changed.js ${{ github.event.push.base.sha }} ${{ steps.modified_rfc.outputs.path }}`; then
+          if `node rfcs-tooling/has-stage-changed.js ${{ github.event.push.base.sha }} ${{ steps.rfcs.outputs.modified-rfc }}`; then
             echo "::set-output name=value::true"
           else
             echo "::set-output name=value::false"
@@ -61,15 +52,15 @@ jobs:
       id: stage
       if: ${{ steps.has_stage_changed.outputs.value }} == true
       run: |
-        new_stage=`node rfcs-tooling/find-next-stage.js ${{ steps.modified_rfc.outputs.path }}`
+        new_stage=`node rfcs-tooling/find-next-stage.js ${{ steps.rfcs.outputs.modified-rfc }}`
         echo "::set-output name=value::$new_stage"
-        node rfcs-tooling/update-rfc-stage.js $new_stage ${{ steps.modified_rfc.outputs.path }}
+        node rfcs-tooling/update-rfc-stage.js $new_stage ${{ steps.rfcs.outputs.modified-rfc }}
 
     - name: Set variables for use in PR
       id: pr_variables
       if: ${{ steps.stage.outputs.value }}
       run: |
-        frontmatter=`node rfcs-tooling/rfc-frontmatter.js ${{ steps.modified_rfc.outputs.path }}`
+        frontmatter=`node rfcs-tooling/rfc-frontmatter.js ${{ steps.rfcs.outputs.modified-rfc }}`
         ready_for_release_pr=`echo $frontmatter | jq '.prs."ready-for-release"'`
         ready_for_release_pr=${ready_for_release_pr//\"/}
         released_pr=`echo $frontmatter | jq '.prs.released'`
@@ -108,13 +99,13 @@ jobs:
     - name: Add new PR link to RFC frontmatter
       if: ${{ steps.stage.outputs.value }}
       run: |
-        node rfcs-tooling/update-advancement-pr.js ${{ steps.modified_rfc.outputs.path }} ${{ steps.stage.outputs.value}} ${{ steps.create_pr.outputs.pull-request-url }}
+        node rfcs-tooling/update-advancement-pr.js ${{ steps.rfcs.outputs.modified-rfc }} ${{ steps.stage.outputs.value}} ${{ steps.create_pr.outputs.pull-request-url }}
 
     - name: Update PR
       if: ${{ steps.stage.outputs.value }}
       run: |
         git config --local user.email 'ember-rfcs@example.com'
         git config --local user.name 'Ember.js RFCS CI'
-        git add ${{ steps.modified_rfc.outputs.path }}
+        git add ${{ steps.rfcs.outputs.modified-rfc }}
         git commit -m "Update RFC ${{ steps.modified_rfc.outputs.pr_number }} ${{ steps.stage.outputs.value }} PR URL"
         git push origin advance-rfc-${{ steps.modified_rfc.outputs.pr_number }}
