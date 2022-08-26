@@ -83,7 +83,7 @@ jobs:
           frontmatter=`node rfcs-tooling/rfc-frontmatter.js ${{ needs.check-rfcs.outputs.modified-rfc }}`
           stage=`echo $frontmatter | jq '.stage'`
           if [[ $stage != '"accepted"' ]]; then
-              echo "::error file=${{ needs.check-rfcs.modified-rfcs }},line=1::Newly added RFCs must have the stage 'accepted' in the frontmatter"
+              echo "::error::Newly added RFCs must have the stage 'accepted' in the frontmatter"
               exit 1
           fi
 
