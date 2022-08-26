@@ -15,7 +15,7 @@ jobs:
     name: Does PR add RFCs?
     runs-on: ubuntu-latest
     outputs:
-      rfcs-added: ${{ steps.rfcs.outputs.added-rfcs-count }}
+      rfcs-added: ${{ steps.rfcs.outputs.added-rfcs-count > 0 }}
       rfcs-changed: ${{ steps.rfcs.outputs.modified-rfcs-count }}
       modified-rfc: ${{ steps.rfcs.outputs.modified-rfc }}
     steps:
