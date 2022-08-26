@@ -1,5 +1,5 @@
 ---
-stage: released
+stage: accepted
 start-date:
 release-date: Unreleased
 release-versions:
