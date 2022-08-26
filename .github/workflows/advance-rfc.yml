@@ -49,7 +49,7 @@ jobs:
 
     - name: Update frontmatter
       id: stage
-      if: steps.has_stage_changed.outputs.value == true
+      if: steps.has_stage_changed.outputs.value == 'true'
       run: |
         new_stage=`node rfcs-tooling/find-next-stage.js ${{ steps.rfcs.outputs.modified-rfc }}`
         echo "::set-output name=value::$new_stage"
