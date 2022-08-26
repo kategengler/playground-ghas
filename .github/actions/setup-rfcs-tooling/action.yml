@@ -1,11 +1,6 @@
 name: Setup RFCs Tooling
 description: 'Setup RFCs Tooling'
 
-inputs:
-  token:
-    description: 'GitHub token with repo permissions'
-    required: true
-
 runs:
   using: "composite"
   steps:

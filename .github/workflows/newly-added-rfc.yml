@@ -33,7 +33,7 @@ jobs:
 
   check-in-exploring:
     name: Stage must be 'Exploring' (via label) for new RFC before merging
-    if: needs.check-rfcs.outputs.rfcs-added == true
+    if: needs.check-rfcs.outputs.rfcs-added == 'true'
     runs-on: ubuntu-latest
     needs: [check-rfcs]
     steps:
@@ -77,8 +77,6 @@ jobs:
 
       - name: Setup RFCs tooling
         uses: ./.github/actions/setup-rfcs-tooling
-        with:
-          token: ${{ github.token }}
 
       - name: Verify stage of newly added RFC is `accepted` in frontmatter
         run: |
@@ -99,8 +97,6 @@ jobs:
 
       - name: Setup RFCs tooling
         uses: ./.github/actions/setup-rfcs-tooling
-        with:
-          token: ${{ github.token }}
 
       - name: Test RFC Filename matches PR Number that adds it
         env:
