@@ -32,7 +32,8 @@ jobs:
     - name: Find modified or added RFC path
       id: modified_rfc
       run: |
-        pr_number="${${{ steps.rfcs.outputs.modified-rfc }}//[!0-9]/}"
+        changed_file=${{ steps.rfcs.outputs.modified-rfc }}
+        pr_number="${changed_file//[!0-9]/}"
         echo "::set-output name=pr_number::$pr_number"
 
     - name: Determine if stage has changed
