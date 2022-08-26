@@ -40,7 +40,7 @@ jobs:
       - name: Ensure the RFC is in the Exploring Stage before merge is allowed
         if: ${{ !contains(github.event.pull_request.labels.*.name, 'S-Exploring') }}
         run: |
-          echo "Newly added RFCs must advance to the Exploring Stage before merging to Accepted is allowed"
+          echo "::error::Newly added RFCs must advance to the Exploring Stage before merging to Accepted is allowed"
           exit 1
 
   verify-only-in-one-stage:
@@ -52,7 +52,7 @@ jobs:
       - name: Ensure the RFC only has one stage
         if: contains(github.event.pull_request.labels.*.name, 'S-Exploring') && contains(github.event.pull_request.labels.*.name, 'S-Proposed')
         run: |
-          echo "Newly added RFC must only have one stage label"
+          echo "::error::Newly added RFC must only have one stage label"
           exit 1
 
   only-one-rfc-added:
@@ -83,7 +83,7 @@ jobs:
           frontmatter=`node rfcs-tooling/rfc-frontmatter.js ${{ needs.check-rfcs.outputs.modified-rfc }}`
           stage=`echo $frontmatter | jq '.stage'`
           if [[ $stage != '"accepted"' ]]; then
-              echo "::error::Newly added RFCs must have the stage 'accepted' in the frontmatter"
+              echo "::error file=${{ needs.check-rfcs.modified-rfcs }},line=1::Newly added RFCs must have the stage 'accepted' in the frontmatter"
               exit 1
           fi
 
