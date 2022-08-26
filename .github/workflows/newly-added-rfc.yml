@@ -25,6 +25,12 @@ jobs:
         id: rfcs
         uses: ./.github/actions/find-added-or-modified-rfcs
 
+      - name: Debug output
+        run: |
+          echo "RFC Added count: ${{ steps.rfcs.outputs.added-rfcs-count }}"
+          echo "RFC Changed count: ${{ steps.rfcs.outputs.modified-rfcs-count }}"
+          echo "RFC: ${{ steps.rfcs.outputs.modified-rfc }}"
+
   check-in-exploring:
     name: Stage must be 'Exploring' (via label) for new RFC before merging
     if: ${{ needs.check-rfcs.outputs.rfcs-added }}
