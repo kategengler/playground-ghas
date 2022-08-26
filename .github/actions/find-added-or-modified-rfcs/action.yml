@@ -1,6 +1,14 @@
 name: Find added or modified RFCs
 description: 'Find added or modified RFC'
 
+inputs:
+  base-sha:
+    description: 'Base SHA'
+    required: false
+  sha:
+    description: 'SHA'
+    required: false
+
 outputs:
   modified-rfc:
     description: "The path of the RFC that was added or modified"
@@ -21,6 +29,8 @@ runs:
       with:
         path: 'text'
         json: 'true'
+        sha: ${{ inputs.sha }}
+        base_sha: ${{ inputs.base-sha }}
 
     - name: Get counts of changed and added RFCs
       id: counts

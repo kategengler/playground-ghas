@@ -16,24 +16,11 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Find added or modified RFCs
+      - name: RFCs Added or Changed
         id: rfcs
-        uses: tj-actions/changed-files@v25
-        with:
-          path: 'text'
-          sha: ${{ github.event.pull_request.head.sha }}
-          base_sha: ${{ github.event.pull_request.base.sha }}
-          json: 'true'
-
-      - name: Find out if an RFC has been added
-        id: added-rfc
-        run: |
-          len=`echo "${{ steps.rfcs.outputs.added_files }}" | jq '. | length'`
-          if [[ $len == 1 ]]; then
-            echo "::set-output name=exists::true"
-          fi
+        uses: ./.github/actions/find-added-or-modified-rfcs
 
       - uses: actions-ecosystem/action-add-labels@v1
-        if: steps.added-rfc.outputs.exists
+        if: steps.rfcs.outputs.added-rfcs-count > 0
         with:
           labels: S-Proposed
