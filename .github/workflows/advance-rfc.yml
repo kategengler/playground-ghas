@@ -20,6 +20,8 @@ jobs:
     - name: RFCs Added or Changed
       id: rfcs
       uses: ./.github/actions/find-added-or-modified-rfcs
+      with:
+        base-sha: ${{ github.event.before }}
 
     - name: Fail if more than 1 RFC is added or modified
       if: steps.rfcs.outputs.modified-rfcs-count > 1
@@ -27,7 +29,7 @@ jobs:
         echo "::error::More than 1 RFC is added or modified in this PR; unable to automatically open PRs for advancement"
         exit 1
 
-    - name: Find modified or added RFC path
+    - name: Find modified RFC Number
       id: modified_rfc
       run: |
         changed_file=${{ steps.rfcs.outputs.modified-rfc }}
