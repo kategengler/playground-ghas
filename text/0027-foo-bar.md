@@ -11,4 +11,4 @@ prs:
   accepted: 'https://github.com/kategengler/playground-ghas/pull/26'
 
 ---
-# My RFC Modified
+# My RFC
