@@ -8,5 +8,6 @@ release-versions:
 teams:
   - framework
 prs:
+  ready-for-release: 'https://github.com/kategengler/playground-ghas/pull/79'
 ---
 # My #78 RFC
