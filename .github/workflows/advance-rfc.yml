@@ -45,7 +45,8 @@ jobs:
             echo "::set-output name=value::true"
           else
             echo "::set-output name=value::false"
-          fi
+            true
+          fi          
         fi
 
     - name: Update frontmatter
