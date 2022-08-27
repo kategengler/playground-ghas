@@ -68,6 +68,7 @@ jobs:
           echo "::set-output name=value::$new_stage"
 
   advance-rfc:
+    name: Open PR to advance RFC to the next stage
     runs-on: ubuntu-latest
     needs: [ check-rfcs ]
     if: needs.check-rfcs.outputs.new-stage
@@ -103,7 +104,6 @@ jobs:
           template="${template//'%'/'%25'}"
           template="${template//$'\n'/'%0A'}"
           template="${template//$'\r'/'%0D'}"
-          echo "Template: $template"
           echo "::set-output name=body::$template"
           echo "Pretty Stage: $pretty_stage"
           echo "::set-output name=pretty-stage::$pretty_stage"
