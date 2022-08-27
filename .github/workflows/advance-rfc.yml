@@ -36,6 +36,7 @@ jobs:
 
     - name: Determine if stage has changed
       id: has_stage_changed
+      continue-on-error: true
       run: |
         if [[ ${{ steps.rfcs.outputs.added-rfcs-count }} == 1 ]]; then
           echo "::set-output name=value::true"
@@ -45,7 +46,6 @@ jobs:
             echo "::set-output name=value::true"
           else
             echo "::set-output name=value::false"
-            true
           fi          
         fi
 
