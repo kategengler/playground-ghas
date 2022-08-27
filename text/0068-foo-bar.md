@@ -9,5 +9,6 @@ teams:
   - framework
 prs:
   accepted: 'https://github.com/kategengler/playground-ghas/pull/29'
+  ready-for-release: 'https://github.com/kategengler/playground-ghas/pull/69'
 ---
 # My RFC
