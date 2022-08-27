@@ -1,5 +1,5 @@
 ---
-stage: accepted
+stage: ready-for-release
 start-date:
 release-date: Unreleased
 release-versions:
@@ -8,6 +8,5 @@ release-versions:
 teams:
   - framework
 prs:
-
 ---
 # My RFC And updated
