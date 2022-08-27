@@ -40,7 +40,8 @@ jobs:
         if [[ ${{ steps.rfcs.outputs.added-rfcs-count }} == 1 ]]; then
           echo "::set-output name=value::true"
         else
-          if `node rfcs-tooling/has-stage-changed.js ${{ github.event.before }} ${{ steps.rfcs.outputs.modified-rfc }}`; then
+          node /Users/katie/dev/emberjs/rfcs-tooling/has-stage-changed.js ${{ github.event.before }} ${{ steps.rfcs.outputs.modified-rfc }}
+          if [[ $? == 0 ]]; then
             echo "::set-output name=value::true"
           else
             echo "::set-output name=value::false"
