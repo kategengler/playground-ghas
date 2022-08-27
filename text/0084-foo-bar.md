@@ -1,5 +1,5 @@
 ---
-stage: ready-for-release
+stage: released
 start-date:
 release-date: Unreleased
 release-versions:
@@ -9,5 +9,6 @@ teams:
   - framework
 prs:
   ready-for-release: 'https://github.com/kategengler/playground-ghas/pull/85'
+  released: 'https://github.com/kategengler/playground-ghas/pull/86'
 ---
 # My RFC 84
