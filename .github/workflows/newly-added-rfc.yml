@@ -40,7 +40,7 @@ jobs:
       - name: Ensure the RFC is in the Exploring Stage before merge is allowed
         if: ${{ !contains(github.event.pull_request.labels.*.name, 'S-Exploring') }}
         run: |
-          echo "::error::Newly added RFCs must advance to the Exploring Stage before merging to Accepted is allowed"
+          echo "::error::Newly added RFCs must advance to the Exploring Stage (via label) before merging to Accepted is allowed"
           exit 1
 
   verify-only-in-one-stage:
@@ -101,7 +101,11 @@ jobs:
       - name: Test RFC Filename matches PR Number that adds it
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: node check-filename-matches-pr.js $PR_NUMBER ${{ needs.check-rfcs.outputs.modified-rfc }}
+        run: |
+          filename_check=$(node check-filename-matches-pr.js $PR_NUMBER ${{ needs.check-rfcs.outputs.modified-rfc }})
+          if [[ $? -ne 0 ]]; then
+            echo "::error::${filename_check}"
+          fi
         working-directory: rfcs-tooling
 
   check-accepted-pr-url:
