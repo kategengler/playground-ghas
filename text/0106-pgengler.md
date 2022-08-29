@@ -1,5 +1,5 @@
 ---
-stage: ready-for-release
+stage: released
 start-date:
 release-date: Unreleased
 release-versions:
@@ -10,5 +10,6 @@ teams:
 prs:
   accepted: 'https://github.com/kategengler/playground-ghas/pull/106'
   ready-for-release: 'https://github.com/kategengler/playground-ghas/pull/107'
+  released: 'https://github.com/kategengler/playground-ghas/pull/108'
 ---
 # My RFC
