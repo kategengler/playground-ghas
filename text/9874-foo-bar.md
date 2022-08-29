@@ -1,6 +1,6 @@
 ---
 stage: accepted
-start-date:
+start-date: 1970-01-01
 release-date: Unreleased
 release-versions:
   ember-source: vX.Y.Z
