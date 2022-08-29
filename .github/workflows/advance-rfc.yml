@@ -74,6 +74,6 @@ jobs:
     with:
       rfc-path: needs.check-rfcs.outputs.modified-rfc
       rfc-number: needs.check-rfcs.outputs.rfc-number
-      stage: needs.check-rfcs.outputs.new-stage
+      new-stage: needs.check-rfcs.outputs.new-stage
     secrets:
       personal-access-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
