@@ -10,5 +10,6 @@ teams:
 prs:
   accepted:
   ready-for-release: 'https://github.com/kategengler/playground-ghas/pull/89'
+  released: 'https://github.com/kategengler/playground-ghas/pull/92'
 ---
 # My RFC
