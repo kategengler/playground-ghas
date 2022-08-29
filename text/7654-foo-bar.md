@@ -1,6 +1,6 @@
 ---
 stage: accepted
-start-date:
+start-date: 2022-08-28
 release-date: Unreleased
 release-versions:
   ember-source: vX.Y.Z
