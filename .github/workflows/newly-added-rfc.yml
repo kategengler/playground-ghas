@@ -121,6 +121,7 @@ jobs:
           accepted_pr=`echo $frontmatter | jq '.prs.accepted'`
           accepted_pr=${accepted_pr//\"/}
           if [[ $accepted_pr != ${{ github.event.pull_request.url }} ]]; then
+            echo "Accepted PR in frontmatter: $accepted_pr"
             echo "::error::Accepted PR URL is incorrect, please update the frontmatter prs.accepted to \"${{ github.event.pull_request.html_url }}\""
             exit 1
           fi
