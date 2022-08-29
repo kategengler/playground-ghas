@@ -8,6 +8,7 @@ release-versions:
 teams:
   - framework
 prs:
+  accepted: https://github.com/kategengler/playground-ghas/pull/96
 
 ---
 # My RFC
