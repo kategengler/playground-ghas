@@ -68,7 +68,7 @@ jobs:
           echo "::set-output name=value::$new_stage"
 
   advance-rfc:
-    uses: ./.github/workflows/advance-rfc.yml
+    uses: ./.github/workflows/open-advancement-pr.yml
     needs: [ check-rfcs ]
     if: needs.check-rfcs.outputs.new-stage
     with:
