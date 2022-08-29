@@ -1,3 +1,5 @@
+name: Reusable workflow to open advancement PRs
+
 on:
   workflow_call:
     inputs:

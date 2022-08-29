@@ -1,4 +1,4 @@
-name: Open PR to advance an RFC to the next stage
+name: Trigger the opening of a PR to advance an RFC to the next stage
 
 on:
   workflow_dispatch:
@@ -31,7 +31,6 @@ jobs:
           echo "::set-output name=rfc-number::$rfc_number"
 
       - name: Find new stage
-        if: steps.has-stage-changed.outputs.value == 'true'
         id: new-stage
         run: |
           new_stage=`node rfcs-tooling/find-next-stage.js ${{ inputs.rfc-path }}`
