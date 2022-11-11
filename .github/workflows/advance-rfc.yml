@@ -41,7 +41,7 @@ jobs:
           changed_file=${{ steps.rfcs.outputs.modified-rfc }}
           rfc_number="${changed_file//[!0-9]/}"
           echo "RFC Number: $rfc_number"
-          echo "::set-output name=rfc-number::$rfc_number"
+          echo "rfc-number=$rfc_number" >> $GITHUB_OUTPUT
 
       - name: Determine if stage has changed
         id: has-stage-changed
@@ -49,13 +49,13 @@ jobs:
         run: |
           if [[ ${{ steps.rfcs.outputs.added-rfcs-count }} == 1 ]]; then
             echo "A new RFC was added"        
-            echo "::set-output name=value::true"
+            echo "value=true" >> $GITHUB_OUTPUT
           else
             node rfcs-tooling/has-stage-changed.js ${{ github.event.before }} ${{ steps.rfcs.outputs.modified-rfc }}
             if [[ $? == 0 ]]; then
-              echo "::set-output name=value::true"
+              echo "value=true" >> $GITHUB_OUTPUT
             else
-              echo "::set-output name=value::false"
+              echo "value=false" >> $GITHUB_OUTPUT
             fi          
           fi     
 
@@ -65,7 +65,7 @@ jobs:
         run: |
           new_stage=`node rfcs-tooling/find-next-stage.js ${{ steps.rfcs.outputs.modified-rfc }}`
           echo "New Stage: $new_stage"
-          echo "::set-output name=value::$new_stage"
+          echo "value=$new_stage" >> $GITHUB_OUTPUT
 
   advance-rfc:
     uses: ./.github/workflows/open-advancement-pr.yml

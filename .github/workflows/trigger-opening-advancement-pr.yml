@@ -28,14 +28,14 @@ jobs:
           rfc=${{ inputs.rfc-path }}
           rfc_number="${rfc//[!0-9]/}"
           echo "RFC Number: $rfc_number"
-          echo "::set-output name=rfc-number::$rfc_number"
+          echo "rfc-number=$rfc_number" >> $GITHUB_OUTPUT
 
       - name: Find new stage
         id: new-stage
         run: |
           new_stage=`node rfcs-tooling/find-next-stage.js ${{ inputs.rfc-path }}`
           echo "New Stage: $new_stage"
-          echo "::set-output name=value::$new_stage"
+          echo "value=$new_stage" >> $GITHUB_OUTPUT
 
 
   advance-rfc:

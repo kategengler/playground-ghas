@@ -52,9 +52,9 @@ jobs:
           template="${template//'%'/'%25'}"
           template="${template//$'\n'/'%0A'}"
           template="${template//$'\r'/'%0D'}"
-          echo "::set-output name=body::$template"
+          echo "body=$template" >> $GITHUB_OUTPUT
           echo "Pretty Stage: $pretty_stage"
-          echo "::set-output name=pretty-stage::$pretty_stage"
+          echo "pretty-stage=$pretty_stage" >> $GITHUB_OUTPUT
 
       - name: Open PR
         id: create-pr
