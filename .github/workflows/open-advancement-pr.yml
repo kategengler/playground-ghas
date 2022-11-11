@@ -78,3 +78,4 @@ jobs:
           git add ${{ inputs.rfc-path }}
           git commit -m "Update RFC ${{ inputs.rfc-number }} ${{ inputs.new-stage }} PR URL"
           git push origin advance-rfc-${{ inputs.rfc-number }}
+          echo "## Opened PR ${{ steps.create-pr.outputs.pull-request-url }}" >> $GITHUB_STEP_SUMMARY
