@@ -63,7 +63,7 @@ jobs:
     steps:
       - name: Fail if more than 1 RFC is added or modified
         if: ${{ needs.check-rfcs.outputs.rfcs-changed > 1}}
-        run: |      
+        run: |
           echo "::error::More than 1 RFC is added in this PR; will be unable to automatically open PRs for advancement"
           exit 1
 
