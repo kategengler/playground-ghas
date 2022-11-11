@@ -9,6 +9,7 @@ teams:
   - typescript
 prs:
   accepted: 'https://github.com/kategengler/playground-ghas/pull/113'
+  ready-for-release: 'https://github.com/kategengler/playground-ghas/pull/114'
 project-link:
 suite:
 ---
