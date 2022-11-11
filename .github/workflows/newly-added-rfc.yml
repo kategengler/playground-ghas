@@ -24,8 +24,6 @@ jobs:
       - name: RFCs Added or Changed
         id: rfcs
         uses: ./.github/actions/find-added-or-modified-rfcs
-        with:
-          sha: ${{ github.event.pull_request.head.sha }}
 
       - name: Debug output
         run: |
