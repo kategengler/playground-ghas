@@ -9,7 +9,7 @@ on:
       - 'text/*.md'
 
 concurrency:
-  group: newly-added-rfc-${{ github.head_ref || github.ref }}
+  group: newly-added-rfc-${{ github.head_ref || github.ref }}-${{ github.event_name }}
   cancel-in-progress: true
 
 jobs:
