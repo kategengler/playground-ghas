@@ -8,7 +8,7 @@ teams: # delete teams that aren't relevant
   - data
   - typescript
 prs:
-  accepted: # update this to the PR that you propose your RFC in
+  accepted: https://github.com/kategengler/playground-ghas/pull/112 # update this to the PR that you propose your RFC in
 project-link:
 suite:
 ---
