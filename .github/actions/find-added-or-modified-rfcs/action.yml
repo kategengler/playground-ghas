@@ -25,7 +25,7 @@ runs:
   steps:
     - name: Find added or modified RFCs
       id: rfcs
-      uses: tj-actions/changed-files@v25
+      uses: tj-actions/changed-files@v34
       with:
         path: 'text'
         json: 'true'
