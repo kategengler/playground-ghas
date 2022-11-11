@@ -48,9 +48,9 @@ jobs:
             pretty_stage="Recommended"
             template=`sed -e 's/__RFC_NUMBER__/${{ inputs.rfc-number }}/g' -e "s>__READY_FOR_RELEASE_PR__>$ready_for_release_pr>g" -e "s>__RELEASED_PR__>$released_pr>g" .github/PULL_REQUEST_TEMPLATE/advance-to-recommended.md`
           fi
-          echo 'body<<EOF' >> $GITHUB_ENV
-          echo "$template" >> $GITHUB_ENV
-          echo 'EOF' >> $GITHUB_ENV      
+          echo 'body<<EOF' >> $GITHUB_OUTPUT
+          echo "$template" >> $GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT     
           echo "Pretty Stage: $pretty_stage"
           echo "pretty-stage=$pretty_stage" >> $GITHUB_OUTPUT
 
