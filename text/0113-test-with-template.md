@@ -1,14 +1,15 @@
 ---
-stage: accepted
-start-date: 2022-11-11T00:00:00.000Z # Format to YYYY-MM-DDT00:00:00.000Z
-release-date: # Format to YYYY-MM-DDT00:00:00.000Z
+stage: ready-for-release
+start-date: 2022-11-11T00:00:00.000Z
+release-date:
 release-versions:
-teams: # delete teams that aren't relevant
+teams:
   - cli
   - data
   - typescript
 prs:
-  accepted: https://github.com/kategengler/playground-ghas/pull/113 # update this to the PR that you propose your RFC in
+  accepted: 'https://github.com/kategengler/playground-ghas/pull/113'
+  ready-for-release: 'https://github.com/kategengler/playground-ghas/pull/114'
 project-link:
 suite:
 ---
