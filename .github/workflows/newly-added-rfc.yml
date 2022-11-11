@@ -14,8 +14,6 @@ jobs:
   check-rfcs:
     name: Does PR add RFCs?
     runs-on: ubuntu-latest
-    inputs:
-      sha: ${{ github.event.pull_request.head.sha }}
     outputs:
       rfcs-added: ${{ steps.rfcs.outputs.added-rfcs-count > 0 }}
       rfcs-changed: ${{ steps.rfcs.outputs.modified-rfcs-count }}
@@ -26,6 +24,8 @@ jobs:
       - name: RFCs Added or Changed
         id: rfcs
         uses: ./.github/actions/find-added-or-modified-rfcs
+        with:
+          sha: ${{ github.event.pull_request.head.sha }}
 
       - name: Debug output
         run: |
