@@ -4,7 +4,7 @@ name: Newly Added RFC
 
 on:
   pull_request:
-    types: [opened, labeled, unlabeled, synchronize, reopened]
+    types: [opened, labeled, unlabeled, synchronize, reopened, ready_for_review]
     paths:
       - 'text/*.md'
 
