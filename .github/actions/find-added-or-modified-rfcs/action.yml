@@ -1,6 +1,8 @@
 name: Find added or modified RFCs
 description: 'Find added or modified RFC'
 
+# Any workflow using this action requires using actions/checkout with a fetch-depth: 0
+
 inputs:
   base-sha:
     description: 'Base SHA'

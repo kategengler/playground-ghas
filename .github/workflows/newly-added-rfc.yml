@@ -1,5 +1,7 @@
 name: Newly Added RFC
 
+# Runs various checks on pull requests that add new RFCs
+
 on:
   pull_request:
     types: [opened, labeled, unlabeled, synchronize, reopened]
