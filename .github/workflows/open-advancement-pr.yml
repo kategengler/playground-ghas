@@ -58,7 +58,7 @@ jobs:
 
       - name: Open PR
         id: create-pr
-        uses: peter-evans/create-pull-request@v4
+        uses: peter-evans/create-pull-request@v4.2.0
         with:
           token: ${{ secrets.personal-access-token }}
           commit-message: "Advance RFC to Stage ${{ inputs.new-stage }}"
