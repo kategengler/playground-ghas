@@ -8,6 +8,6 @@ release-versions:
 teams:
   - framework
 prs:
-  accepted:
+  accepted: http://example.com
 ---
 # My RFC
