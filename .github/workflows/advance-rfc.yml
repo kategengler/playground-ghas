@@ -86,6 +86,7 @@ jobs:
 
   generate-rfc-frontmatter-data-artifact:
     name: 'Generate a JSON file of RFC status'
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
