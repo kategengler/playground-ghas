@@ -46,6 +46,6 @@ runs:
     - name: Find modified or added RFC info
       id: modified-rfc
       shell: bash
-      run: |        
+      run: |
         changed_file=`echo "${{ steps.rfcs.outputs.all_changed_files }}" | jq '.[0]'`
         echo "path=$changed_file" >> $GITHUB_OUTPUT
