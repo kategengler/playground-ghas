@@ -8,7 +8,7 @@ teams:
   - data
   - typescript
 prs:
-  accepted: 'https://github.com/kategengler/playground-ghas/pull/138'
+  accepted: 'https://github.com/kategengler/playground-ghas/pull/137'
 project-link:
 suite:
 ---
