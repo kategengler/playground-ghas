@@ -1,4 +1,4 @@
-# Advance #__RFC_NUMBER__ "$__RFC_TITLE__" to the [Ready For Release Stage](https://github.com/emberjs/rfcs#ready-for-release)
+# Advance #__RFC_NUMBER__ to the [Ready For Release Stage](https://github.com/emberjs/rfcs#ready-for-release)
 
 ## Summary
 

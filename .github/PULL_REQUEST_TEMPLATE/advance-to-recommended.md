@@ -1,4 +1,4 @@
-# Advance #__RFC_NUMBER__ "$__RFC_TITLE__" to the [Recommended Stage](https://github.com/emberjs/rfcs#recommended)
+# Advance #__RFC_NUMBER__ to the [Recommended Stage](https://github.com/emberjs/rfcs#recommended)
 
 ## Summary
 
