@@ -10,6 +10,7 @@ teams:
 prs:
   accepted: 'https://github.com/kategengler/playground-ghas/pull/137'
   ready-for-release: 'https://github.com/kategengler/playground-ghas/pull/138'
+  released: 'https://github.com/kategengler/playground-ghas/pull/139'
 project-link:
 suite:
 ---
