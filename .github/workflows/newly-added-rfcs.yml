@@ -114,7 +114,6 @@ jobs:
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: node rfcs-tooling/scripts/check-filename-matches-pr.mjs $PR_NUMBER ${{ needs.check-rfcs.outputs.modified-rfc }}
-        working-directory: rfcs-tooling
 
   check-accepted-pr-url:
     name: Verify Accepted PR URL is correct
