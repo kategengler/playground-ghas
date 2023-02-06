@@ -11,6 +11,7 @@ prs:
   accepted: 'https://github.com/kategengler/playground-ghas/pull/141'
   ready-for-release: 'https://github.com/kategengler/playground-ghas/pull/142'
   released: 'https://github.com/kategengler/playground-ghas/pull/143'
+  recommended: 'https://github.com/kategengler/playground-ghas/pull/144'
 project-link:
 suite:
 ---
