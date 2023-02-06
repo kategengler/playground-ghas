@@ -39,7 +39,6 @@ jobs:
           released_pr=`echo $frontmatter | jq '.prs.released'`
           released_pr=${released_pr//\"/}
           title=`echo $frontmatter | jq '.title'`
-          title=${title//\"/}
           if [[ ${{ inputs.new-stage }} == "ready-for-release" ]]; then
             pretty_stage="Ready for Release"
             template=`sed -e 's/__RFC_NUMBER__/${{ inputs.rfc-number }}/g' .github/PULL_REQUEST_TEMPLATE/advance-to-ready-for-release.md`  
