@@ -10,9 +10,9 @@ on:
 
 concurrency:
   # Events within 5 minutes are not guaranteed to run in order, and so when removing S-Proposed and adding S-Exploring
-  # we can't guarantee that the run of the workflow will be the one where S-Exploring is added. Adding `github.event_name`
+  # we can't guarantee that the run of the workflow will be the one where S-Exploring is added. Adding `github.event.action`
   # to the concurrency allows both workflows to complete and the PR to eventually have successful checks.
-  group: newly-added-rfc-${{ github.head_ref || github.ref }}-${{ github.event_name }}
+  group: newly-added-rfc-${{ github.head_ref || github.ref }}-${{ github.event.action }}
   cancel-in-progress: true
 
 jobs:
