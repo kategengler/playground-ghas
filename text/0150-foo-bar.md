@@ -8,7 +8,7 @@ release-versions:
 teams:
   - framework
 prs:  
-  accepted: 'https://github.com/kategengler/playground-ghas/pull/85'
+  accepted: 'https://github.com/kategengler/playground-ghas/pull/150'
 ---
 
 # My RFC 150
