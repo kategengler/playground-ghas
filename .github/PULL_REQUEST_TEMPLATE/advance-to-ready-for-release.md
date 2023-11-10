@@ -1,8 +1,6 @@
 # Advance #__RFC_NUMBER__ to the [Ready For Release Stage](https://github.com/emberjs/rfcs#ready-for-release)
 
-## RFC
-
-- [Rendered](__RFC_RENDERED_URL__)
+## [Rendered](__RFC_RENDERED_URL__)
 
 ## Summary
 
