@@ -1,5 +1,5 @@
 ---
-stage: ready-for-release
+stage: released
 start-date:
 release-date: Unreleased
 release-versions:
