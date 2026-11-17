@@ -1,5 +1,5 @@
 ---
-stage: ready-for-release
+stage: released
 start-date: 2022-11-11T00:00:00.000Z
 release-date:
 release-versions:
@@ -10,6 +10,7 @@ teams:
 prs:
   accepted: 'https://github.com/kategengler/playground-ghas/pull/134'
   ready-for-release: 'https://github.com/kategengler/playground-ghas/pull/135'
+  released: 'https://github.com/kategengler/playground-ghas/pull/136'
 project-link:
 suite:
 ---
