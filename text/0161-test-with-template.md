@@ -1,5 +1,5 @@
 ---
-stage: proposed
+stage: accepted
 start-date: 2023-02-06T00:00:00.000Z
 release-date:
 release-versions:
@@ -8,7 +8,7 @@ teams:
   - data
   - typescript
 prs:
-  accepted: 'https://github.com/kategengler/playground-ghas/pull/146'
+  accepted: 'https://github.com/kategengler/playground-ghas/pull/161'
 project-link:
 suite:
 ---
