@@ -6,21 +6,26 @@ on:
     paths:
       - 'text/*.md'
 
+permissions: {}
+
 jobs:
   label-pr:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: read
     steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 0
-          persist-credentials: false
+      - name: Label PR when it adds an RFC
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          added_rfc_count="$(gh api --paginate --slurp \
+            "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/files?per_page=100" \
+            --jq '[.[].[] | select(.status == "added" and (.filename | startswith("text/") and endswith(".md")))] | length')"
 
-      - name: RFCs Added or Changed
-        id: rfcs
-        uses: ./.github/actions/find-added-or-modified-rfcs
-
-      - uses: actions-ecosystem/action-add-labels@v1
-        if: steps.rfcs.outputs.added-rfcs-count > 0
-        with:
-          labels: S-Proposed
+          if (( added_rfc_count > 0 )); then
+            gh api --method POST \
+              "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/labels" \
+              -f 'labels[]=S-Proposed' > /dev/null
+          fi

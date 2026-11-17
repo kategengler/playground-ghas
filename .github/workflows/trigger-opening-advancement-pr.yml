@@ -8,40 +8,55 @@ on:
         required: true
         description: Path to the RFC to open PR for advancement to the next stage
 
+permissions: {}
+
 jobs:
   gather-rfc-info:
     name: 'Gather RFC info'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       new-stage: ${{ steps.new-stage.outputs.value }}
       rfc-number: ${{ steps.rfc.outputs.rfc-number }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Setup RFCs tooling
         uses: ./.github/actions/setup-rfcs-tooling
 
       - name: Find RFC Number
         id: rfc
+        env:
+          RFC_PATH: ${{ inputs.rfc-path }}
         run: |
-          rfc=${{ inputs.rfc-path }}
-          rfc_number="${rfc//[!0-9]/}"
+          if [[ ! "$RFC_PATH" =~ ^text/([0-9]+)-[^/]+\.md$ ]] || [[ "$RFC_PATH" == *$'\n'* || "$RFC_PATH" == *$'\r'* ]] || [[ ! -f "$RFC_PATH" ]]; then
+            echo "::error::Invalid RFC path"
+            exit 1
+          fi
+          rfc_number="${BASH_REMATCH[1]}"
           echo "RFC Number: $rfc_number"
-          echo "rfc-number=$rfc_number" >> $GITHUB_OUTPUT
+          printf 'rfc-number=%s\n' "$rfc_number" >> "$GITHUB_OUTPUT"
 
       - name: Find new stage
         id: new-stage
+        env:
+          RFC_PATH: ${{ inputs.rfc-path }}
         run: |
-          new_stage=`node rfcs-tooling/scripts/find-next-stage.mjs ${{ inputs.rfc-path }}`
+          new_stage="$(node rfcs-tooling/scripts/find-next-stage.mjs "$RFC_PATH")"
           echo "New Stage: $new_stage"
-          echo "value=$new_stage" >> $GITHUB_OUTPUT
+          printf 'value=%s\n' "$new_stage" >> "$GITHUB_OUTPUT"
 
 
   advance-rfc:
     uses: ./.github/workflows/open-advancement-pr.yml
     needs: [ gather-rfc-info ]
     if: needs.gather-rfc-info.outputs.new-stage
+    permissions:
+      contents: read
     with:
       rfc-path: ${{ inputs.rfc-path }}
       rfc-number: ${{ needs.gather-rfc-info.outputs.rfc-number }}

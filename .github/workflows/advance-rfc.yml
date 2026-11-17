@@ -6,19 +6,24 @@ on:
     paths:
       - 'text/*.md'
 
+permissions: {}
+
 jobs:
   check-rfcs:
     name: 'Did push advance the stage of an RFC?'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       new-stage: ${{ steps.new-stage.outputs.value }}
       rfc-number: ${{ steps.modified-rfc.outputs.rfc-number }}
       modified-rfc: ${{ steps.rfcs.outputs.modified-rfc }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Setup RFCs tooling
         uses: ./.github/actions/setup-rfcs-tooling
@@ -30,51 +35,65 @@ jobs:
       - name: Fail if more than 1 RFC is added or modified
         if: steps.rfcs.outputs.modified-rfcs-count > 1
         run: |
-          echo "## More than one RFC added or modified" >> $GITHUB_STEP_SUMMARY
-          echo "This workflow is unable to determine if the stage of any of the added or modified RFCs have changed" >> $GITHUB_STEP_SUMMARY
-          echo "If this DID NOT modify the stage of any RFC, this failure may be ok" >> $GITHUB_STEP_SUMMARY
+          printf '%s\n' \
+            '## More than one RFC added or modified' \
+            'This workflow is unable to determine if the stage of any of the added or modified RFCs have changed' \
+            'If this DID NOT modify the stage of any RFC, this failure may be ok' >> "$GITHUB_STEP_SUMMARY"
           echo "::error::More than 1 RFC is added or modified in this PR; unable to automatically open PRs for advancement"
           exit 1
 
       - name: Find modified RFC Number
         id: modified-rfc
+        env:
+          RFC_PATH: ${{ steps.rfcs.outputs.modified-rfc }}
         run: |
-          changed_file=${{ steps.rfcs.outputs.modified-rfc }}
-          rfc_number="${changed_file//[!0-9]/}"
+          filename="${RFC_PATH##*/}"
+          rfc_number="${filename%%-*}"
+          if [[ ! "$rfc_number" =~ ^[0-9]+$ ]]; then
+            echo "::error::The changed RFC filename does not start with a numeric RFC number"
+            exit 1
+          fi
           echo "RFC Number: $rfc_number"
-          echo "rfc-number=$rfc_number" >> $GITHUB_OUTPUT
+          printf 'rfc-number=%s\n' "$rfc_number" >> "$GITHUB_OUTPUT"
 
       - name: Determine if stage has changed
         id: has-stage-changed
         continue-on-error: true
+        env:
+          ADDED_RFCS_COUNT: ${{ steps.rfcs.outputs.added-rfcs-count }}
+          BEFORE_SHA: ${{ github.event.before }}
+          RFC_PATH: ${{ steps.rfcs.outputs.modified-rfc }}
         run: |
-          if [[ ${{ steps.rfcs.outputs.added-rfcs-count }} == 1 ]]; then
-            echo "## Yes, added a new RFC" >> $GITHUB_STEP_SUMMARY
+          if [[ "$ADDED_RFCS_COUNT" == 1 ]]; then
+            echo "## Yes, added a new RFC" >> "$GITHUB_STEP_SUMMARY"
             echo "A new RFC was added"        
-            echo "value=true" >> $GITHUB_OUTPUT
+            printf 'value=true\n' >> "$GITHUB_OUTPUT"
           else
-            node rfcs-tooling/scripts/has-stage-changed.mjs ${{ github.event.before }} ${{ steps.rfcs.outputs.modified-rfc }}
-            if [[ $? == 0 ]]; then
-              echo "## Yes, stage has changed" >> $GITHUB_STEP_SUMMARY
-              echo "value=true" >> $GITHUB_OUTPUT
+            if node rfcs-tooling/scripts/has-stage-changed.mjs "$BEFORE_SHA" "$RFC_PATH"; then
+              echo "## Yes, stage has changed" >> "$GITHUB_STEP_SUMMARY"
+              printf 'value=true\n' >> "$GITHUB_OUTPUT"
             else
-              echo "## No, stage unchanged or at final stage" >> $GITHUB_STEP_SUMMARY
-              echo "value=false" >> $GITHUB_OUTPUT
+              echo "## No, stage unchanged or at final stage" >> "$GITHUB_STEP_SUMMARY"
+              printf 'value=false\n' >> "$GITHUB_OUTPUT"
             fi          
           fi     
 
       - name: Find new stage
         if: steps.has-stage-changed.outputs.value == 'true'
         id: new-stage
+        env:
+          RFC_PATH: ${{ steps.rfcs.outputs.modified-rfc }}
         run: |
-          new_stage=`node rfcs-tooling/scripts/find-next-stage.mjs ${{ steps.rfcs.outputs.modified-rfc }}`
+          new_stage="$(node rfcs-tooling/scripts/find-next-stage.mjs "$RFC_PATH")"
           echo "New Stage: $new_stage"
-          echo "value=$new_stage" >> $GITHUB_OUTPUT
+          printf 'value=%s\n' "$new_stage" >> "$GITHUB_OUTPUT"
 
   advance-rfc:
     uses: ./.github/workflows/open-advancement-pr.yml
     needs: [ check-rfcs ]
     if: needs.check-rfcs.outputs.new-stage
+    permissions:
+      contents: read
     with:
       rfc-path: ${{ needs.check-rfcs.outputs.modified-rfc }}
       rfc-number: ${{ needs.check-rfcs.outputs.rfc-number }}

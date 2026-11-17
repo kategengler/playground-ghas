@@ -5,16 +5,18 @@ runs:
   using: "composite"
   steps:
     - name: Checkout tools repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         repository: emberjs/rfcs-tooling
         path: rfcs-tooling
-        ref: 'v3.0.0'
+        ref: 'd22893748a2d816aaab529aaef29111abae7614a'
+        persist-credentials: false
 
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
       with:
-        node-version: 16
+        node-version: 24
+        package-manager-cache: false
 
-    - run: yarn install
+    - run: yarn install --frozen-lockfile
       shell: bash
       working-directory: rfcs-tooling

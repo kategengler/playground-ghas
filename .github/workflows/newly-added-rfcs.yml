@@ -8,32 +8,39 @@ on:
     paths:
       - 'text/*.md'
 
+permissions: {}
+
 jobs:
   check-rfcs:
     name: Does PR add RFCs?
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       rfcs-added: ${{ steps.rfcs.outputs.added-rfcs-count > 0 }}
       rfcs-changed: ${{ steps.rfcs.outputs.modified-rfcs-count }}
       modified-rfc: ${{ steps.rfcs.outputs.modified-rfc }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: RFCs Added or Changed
         id: rfcs
         uses: ./.github/actions/find-added-or-modified-rfcs
 
       - name: Debug output
+        env:
+          ADDED_RFCS_COUNT: ${{ steps.rfcs.outputs.added-rfcs-count }}
+          MODIFIED_RFCS_COUNT: ${{ steps.rfcs.outputs.modified-rfcs-count }}
         run: |
-          echo "RFC Added count: ${{ steps.rfcs.outputs.added-rfcs-count }}"
-          echo "RFC Changed count: ${{ steps.rfcs.outputs.modified-rfcs-count }}"
-          echo "RFC: ${{ steps.rfcs.outputs.modified-rfc }}"
-          if [[ ${{ steps.rfcs.outputs.added-rfcs-count }} == 1 ]]; then 
-            echo "## RFC Added in this PR!!!" >> $GITHUB_STEP_SUMMARY
-          elif [[ ${{steps.rfcs.outputs.added-rfcs-count}} == 0 ]]; then
-            echo "## No RFCs added in this PR" >> $GITHUB_STEP_SUMMARY        
+          echo "RFC Added count: $ADDED_RFCS_COUNT"
+          echo "RFC Changed count: $MODIFIED_RFCS_COUNT"
+          if [[ "$ADDED_RFCS_COUNT" == 1 ]]; then
+            echo "## RFC Added in this PR!!!" >> "$GITHUB_STEP_SUMMARY"
+          elif [[ "$ADDED_RFCS_COUNT" == 0 ]]; then
+            echo "## No RFCs added in this PR" >> "$GITHUB_STEP_SUMMARY"
           fi
 
   check-in-exploring:
@@ -75,19 +82,25 @@ jobs:
   frontmatter-stage-is-accepted:
     name: Frontmatter stage must be 'accepted' before merging
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [ check-rfcs ]
     if: needs.check-rfcs.outputs.rfcs-added == 'true'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Setup RFCs tooling
         uses: ./.github/actions/setup-rfcs-tooling
 
       - name: Verify stage of newly added RFC is `accepted` in frontmatter
+        env:
+          RFC_PATH: ${{ needs.check-rfcs.outputs.modified-rfc }}
         run: |
-          frontmatter=`node rfcs-tooling/scripts/rfc-frontmatter.mjs ${{ needs.check-rfcs.outputs.modified-rfc }}`
-          stage=`echo $frontmatter | jq '.stage'`
-          if [[ $stage != '"accepted"' ]]; then
+          frontmatter="$(node rfcs-tooling/scripts/rfc-frontmatter.mjs "$RFC_PATH")"
+          stage="$(jq -r '.stage // empty' <<< "$frontmatter")"
+          if [[ "$stage" != accepted ]]; then
               echo "::error::Newly added RFCs must have the stage 'accepted' in the frontmatter"
               exit 1
           fi
@@ -95,10 +108,14 @@ jobs:
   check-filename:
     name: Filename matches RFC number
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [ check-rfcs ]
     if: needs.check-rfcs.outputs.rfcs-added == 'true'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Setup RFCs tooling
         uses: ./.github/actions/setup-rfcs-tooling
@@ -106,29 +123,32 @@ jobs:
       - name: Test RFC Filename matches PR Number that adds it
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: node rfcs-tooling/scripts/check-filename-matches-pr.mjs $PR_NUMBER ${{ needs.check-rfcs.outputs.modified-rfc }}
+          RFC_PATH: ${{ needs.check-rfcs.outputs.modified-rfc }}
+        run: node rfcs-tooling/scripts/check-filename-matches-pr.mjs "$PR_NUMBER" "$RFC_PATH"
 
   check-accepted-pr-url:
     name: Verify Accepted PR URL is correct
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [ check-rfcs ]
     if: needs.check-rfcs.outputs.rfcs-added == 'true'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Setup RFCs tooling
         uses: ./.github/actions/setup-rfcs-tooling
 
       - name: Verify Accepted PR URL is correct
+        env:
+          RFC_PATH: ${{ needs.check-rfcs.outputs.modified-rfc }}
+          EXPECTED_PR_URL: ${{ github.event.pull_request.html_url }}
         run: |
-          frontmatter=`node rfcs-tooling/scripts/rfc-frontmatter.mjs ${{ needs.check-rfcs.outputs.modified-rfc }}`
-          accepted_pr=`echo $frontmatter | jq '.prs.accepted'`
-          accepted_pr=${accepted_pr//\"/}
-          expected_pr="${{ github.event.pull_request.html_url }}"
-          expected_pr=${expected_pr//\"/}
-          if [[ $accepted_pr != $expected_pr ]]; then
-            echo "Accepted PR in frontmatter: $accepted_pr"
-            echo "Expected PR in frontmatter: $expected_pr"
-            echo "::error::Accepted PR URL is incorrect, please update the frontmatter prs.accepted to \"${{ github.event.pull_request.html_url }}\""
+          frontmatter="$(node rfcs-tooling/scripts/rfc-frontmatter.mjs "$RFC_PATH")"
+          accepted_pr="$(jq -r '.prs.accepted // empty' <<< "$frontmatter")"
+          if [[ "$accepted_pr" != "$EXPECTED_PR_URL" ]]; then
+            echo "::error::Accepted PR URL is incorrect; update the frontmatter prs.accepted value"
             exit 1
           fi
