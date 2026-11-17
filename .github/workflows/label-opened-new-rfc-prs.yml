@@ -20,9 +20,10 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          added_rfc_count="$(gh api --paginate --slurp \
+          added_rfc_count="$(gh api --paginate \
             "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/files?per_page=100" \
-            --jq '[.[].[] | select(.status == "added" and (.filename | startswith("text/") and endswith(".md")))] | length')"
+            --jq '.[] | select(.status == "added" and (.filename | startswith("text/") and endswith(".md"))) | .filename' \
+            | wc -l)"
 
           if (( added_rfc_count > 0 )); then
             gh api --method POST \

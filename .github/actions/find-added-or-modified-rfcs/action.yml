@@ -31,6 +31,7 @@ runs:
       with:
         files: text/*.md
         json: true
+        escape_json: false
         base_sha: ${{ inputs.base-sha }}
         sha: ${{ inputs.sha }}
 
