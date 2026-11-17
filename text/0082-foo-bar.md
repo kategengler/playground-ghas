@@ -1,5 +1,5 @@
 ---
-stage: accepted
+stage: ready-for-release
 start-date:
 release-date: Unreleased
 release-versions:
@@ -8,6 +8,6 @@ release-versions:
 teams:
   - framework
 prs:
-
+  ready-for-release: 'https://github.com/kategengler/playground-ghas/pull/83'
 ---
 # My RFC 82
