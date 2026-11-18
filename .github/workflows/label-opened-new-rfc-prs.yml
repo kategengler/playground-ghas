@@ -12,8 +12,8 @@ jobs:
   label-pr:
     runs-on: ubuntu-latest
     permissions:
-      issues: write
-      pull-requests: read
+      issues: write # in case the S-Proposed label has to be created
+      pull-requests: write # labeling a PR through the issues API requires this
     steps:
       - name: Label PR when it adds an RFC
         env:
